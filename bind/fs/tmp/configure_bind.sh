@@ -15,3 +15,5 @@ done <<_EOT_
 	bind-utils
 _EOT_
 
+systemctl enable named
+
