@@ -15,5 +15,3 @@ if netstat -an|grep -q \.3128.*LISTEN; then
 	DOCKER_BUILD_ARGS+=( --build-arg http_proxy=http://$proxy_ip:3128 --build-arg https_proxy=https://$proxy_ip:3128 )
 fi
 
-DOCKER_RUN_ARGS=( -e container=docker )
-DOCKER_RUN_ARGS+=( -v /sys/fs/cgroup:/sys/fs/cgroup:ro )

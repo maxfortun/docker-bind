@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -e
 
 pushd "$(dirname $0)"
 SWD=$(pwd)
@@ -16,19 +16,15 @@ while read port; do
 	DOCKER_RUN_ARGS+=( -p $hostPort:$port )
 done < <(docker image inspect -f '{{json .Config.ExposedPorts}}' $imageId|jq -r 'keys[]')
 
-# Mount volumes
-#while read mnt; do 
-#done < <(ls $BWD/mnt)
-
-DOCKER_RUN_ARGS+=( -v $BWD/mnt/etc/named:/etc/named )
-DOCKER_RUN_ARGS+=( -v $BWD/mnt/etc/named.conf:/etc/named.conf )
-DOCKER_RUN_ARGS+=( -v $BWD/mnt/etc/named.conf.local:/etc/named.conf.local )
+DOCKER_RUN_ARGS=( -e container=docker )
+DOCKER_RUN_ARGS+=( -v $BWD/mnt/etc/bind/named.conf:/etc/bind/named.conf )
+DOCKER_RUN_ARGS+=( -v $BWD/mnt/etc/bind/named.conf.options:/etc/bind/named.conf.options )
+DOCKER_RUN_ARGS+=( -v $BWD/mnt/etc/bind/named.conf.zones:/etc/bind/named.conf.zones )
+DOCKER_RUN_ARGS+=( -v $BWD/mnt/etc/bind/zones:/var/bind/zones )
 
 docker stop $NAME || true
 docker system prune -f
-docker run -d -it --privileged --cap-add=NET_ADMIN --cap-add=MKNOD --tmpfs /run "${DOCKER_RUN_ARGS[@]}" --name $NAME $RUN_IMAGE:$VERSION $*
-
-$SWD/add_ssh_key.sh
+docker run -d -it "${DOCKER_RUN_ARGS[@]}" --name $NAME $RUN_IMAGE:$VERSION $*
 
 echo "Attaching to container. To detach CTRL-P CTRL-Q."
 docker attach $NAME
