@@ -22,10 +22,10 @@ done < <(docker image inspect -f '{{json .Config.ExposedPorts}}' $imageId|jq -r 
 HOST_MNT=${HOST_MNT:-$BWD/mnt}
 GUEST_MNT=${GUEST_MNT:-$BWD/mnt}
 
-DOCKER_RUN_ARGS+=( -v $GUEST_MNT/mnt/etc/bind/named.conf:/etc/bind/named.conf )
-DOCKER_RUN_ARGS+=( -v $GUEST_MNT/mnt/etc/bind/named.conf.options:/etc/bind/named.conf.options )
-DOCKER_RUN_ARGS+=( -v $GUEST_MNT/mnt/etc/bind/named.conf.zones:/etc/bind/named.conf.zones )
-DOCKER_RUN_ARGS+=( -v $GUEST_MNT/mnt/etc/bind/zones:/var/bind/zones )
+DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/bind/named.conf:/etc/bind/named.conf )
+DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/bind/named.conf.options:/etc/bind/named.conf.options )
+DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/bind/named.conf.zones:/etc/bind/named.conf.zones )
+DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/bind/zones:/var/bind/zones )
 
 docker stop $NAME || true
 docker system prune -f
