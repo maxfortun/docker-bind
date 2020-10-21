@@ -27,6 +27,7 @@ DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/bind/named.conf.options:/etc/bind/named.con
 DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/bind/named.conf.zones:/etc/bind/named.conf.zones )
 DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/bind/zones:/var/bind/zones )
 
+docker update --restart=no $NAME
 docker stop $NAME || true
 docker system prune -f
 docker run -d -it --restart=always "${DOCKER_RUN_ARGS[@]}" --name $NAME $RUN_IMAGE:$VERSION "$@"
